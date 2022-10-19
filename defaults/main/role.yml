@@ -17,6 +17,7 @@ firewalld_default_interface_zone: public
 iptables_service: iptables
 manage_firewall_rules: true
 openvpn_firewall: auto
+openvpn_configure_nat: true
 openvpn_masquerade_not_snat: false
 
 # Misc

@@ -77,8 +77,12 @@ push "{{ opt }}"
 {% endfor %}
 {% endif %}
 keepalive {{ openvpn_keepalive_ping }} {{ openvpn_keepalive_timeout }}
-{% if openvpn_compression is not undefined and openvpn_compression != "" %}
+{% if openvpn_compression is defined and openvpn_compression != "" %}
+# deprecated in OpenVPN 2.5
 compress {{ openvpn_compression }}
+{% endif %}
+{% if openvpn_allow_compress is defined and openvpn_allow_compress != "" %}
+allow-compression {{ openvpn_allow_compress }}
 {% endif %}
 persist-key
 persist-tun
