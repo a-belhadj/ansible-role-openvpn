@@ -60,28 +60,30 @@
     comment: "Accept packets from VPN tunnel adaptor"
   notify: "save iptables"
 
-- name: Perform NAT readdressing - iptables
-  iptables:
-    table: nat
-    chain: POSTROUTING
-    source: "{{ openvpn_server_network }}/24"
-    to_source: "{{ ansible_default_ipv4.address }}"
-    jump: SNAT
-    action: insert
-    comment: "Perform NAT readdressing"
-  when: not openvpn_masquerade_not_snat
-  notify: "save iptables"
+- when: openvpn_configure_nat | bool
+  block:
+    - name: Perform NAT readdressing - iptables
+      iptables:
+        table: nat
+        chain: POSTROUTING
+        source: "{{ openvpn_server_network }}/24"
+        to_source: "{{ ansible_default_ipv4.address }}"
+        jump: SNAT
+        action: insert
+        comment: "Perform NAT readdressing"
+      when: not openvpn_masquerade_not_snat
+      notify: "save iptables"
 
-- name: Perform NAT readdressing with MASQUERADE - iptables
-  iptables:
-    table: nat
-    chain: POSTROUTING
-    source: "{{ openvpn_server_network }}/24"
-    jump: MASQUERADE
-    action: insert
-    comment: "Perform NAT readdressing"
-  when: openvpn_masquerade_not_snat
-  notify: "save iptables"
+    - name: Perform NAT readdressing with MASQUERADE - iptables
+      iptables:
+        table: nat
+        chain: POSTROUTING
+        source: "{{ openvpn_server_network }}/24"
+        jump: MASQUERADE
+        action: insert
+        comment: "Perform NAT readdressing"
+      when: openvpn_masquerade_not_snat
+      notify: "save iptables"
 
 - name: Save existing iptables rule before start iptables service
   shell: "{{ iptables_save_command }}"  # noqa command-instead-of-shell
