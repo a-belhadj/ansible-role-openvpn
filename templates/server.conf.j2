@@ -142,3 +142,7 @@ client-connect {{ openvpn_base_dir }}/client_connect.sh
 {% if openvpn_script_client_disconnect is defined %}
 client-disconnect {{ openvpn_base_dir }}/client_disconnect.sh
 {% endif %}
+
+{% if auth_custom_script is defined %}
+auth-user-pass-verify {{ auth_custom_script.cmd }} {{ auth_custom_script.method }}
+{% endif %}
